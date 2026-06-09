@@ -1,0 +1,8 @@
+# Thư mục lưu file CV PDF được upload bởi ứng viên
+# 
+# Quyền thư mục cần thiết: chmod 755 (hoặc 775 nếu cần)
+# Trên XAMPP Windows: thường không cần cấu hình thêm
+# Trên Linux/macOS: chạy lệnh: chmod 755 uploads/cv/
+#
+# File trong thư mục này sẽ được phục vụ qua URL:
+#   http://localhost/Internetvacongngheweb/uploads/cv/filename.pdf

@@ -1,0 +1,15 @@
+{
+  "name": "internetvacongngheweb",
+  "version": "1.0.0",
+  "private": true,
+  "description": "PHP MVC Job Recruitment project - dev scripts",
+  "scripts": {
+    "dev": "concurrently -k -n PHP,SYNC -c yellow,cyan \"npm:dev:php\" \"npm:dev:sync\"",
+    "dev:php": "php -S localhost:3000 dev-router.php",
+    "dev:sync": "browser-sync start --proxy 'localhost:3000' --port 3001 --files 'views/**/*.php,public/css/**/*.css,public/js/**/*.js,controllers/**/*.php,models/**/*.php,core/**/*.php,index.php,config/**/*.php' --no-open"
+  },
+  "devDependencies": {
+    "browser-sync": "^3.0.4",
+    "concurrently": "^9.1.2"
+  }
+}

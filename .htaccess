@@ -1,0 +1,15 @@
+# Apache URL Rewriting
+# Chuyển tất cả request về index.php (Front Controller pattern)
+
+Options -Indexes
+RewriteEngine On
+
+# Đặt base path đúng với thư mục dự án
+RewriteBase /Internetvacongngheweb/
+
+# Nếu request tới file/thư mục thực sự tồn tại (CSS, JS, ảnh...) → không rewrite
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Các request khác đều chuyển hết về index.php
+RewriteRule ^(.*)$ index.php [QSA,L]
