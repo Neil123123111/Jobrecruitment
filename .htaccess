@@ -4,9 +4,6 @@
 Options -Indexes
 RewriteEngine On
 
-# Đặt base path đúng với thư mục dự án
-RewriteBase /Internetvacongngheweb/
-
 # Nếu request tới file/thư mục thực sự tồn tại (CSS, JS, ảnh...) → không rewrite
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

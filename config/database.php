@@ -12,14 +12,46 @@
  */
 
 // ---------------------------------------------------------------
-// Thông tin kết nối MySQL
+// Thông tin kết nối MySQL (ưu tiên env để chạy cloud như Railway)
 // ---------------------------------------------------------------
-define('DB_HOST',    '127.0.0.1');       // Dùng TCP để tránh lỗi socket "No such file or directory"
-define('DB_NAME',    'jobrecruitment'); // Tên database
-define('DB_PORT',    3306);              // Cổng MySQL (XAMPP mặc định: 3306)
-define('DB_USER',    'root');           // Tên người dùng MySQL (XAMPP mặc định: root)
-define('DB_PASS',    '');               // Mật khẩu MySQL   (XAMPP mặc định: rỗng)
-define('DB_CHARSET', 'utf8mb4');        // Bộ mã ký tự hỗ trợ tiếng Việt
+$env = static function (string $key, $default = null) {
+	$value = getenv($key);
+	return ($value === false || $value === '') ? $default : $value;
+};
+
+$dbHost = (string) $env('DB_HOST', $env('MYSQLHOST', '127.0.0.1'));
+$dbPort = (int) $env('DB_PORT', $env('MYSQLPORT', 3306));
+$dbName = (string) $env('DB_NAME', $env('MYSQLDATABASE', 'jobrecruitment'));
+$dbUser = (string) $env('DB_USER', $env('MYSQLUSER', 'root'));
+$dbPass = (string) $env('DB_PASS', $env('MYSQLPASSWORD', ''));
+$dbCharset = (string) $env('DB_CHARSET', 'utf8mb4');
+
+// Hỗ trợ chuỗi kết nối dạng DATABASE_URL/MYSQL_URL
+$databaseUrl = $env('DATABASE_URL', $env('MYSQL_URL', null));
+if ($databaseUrl) {
+	$parts = parse_url($databaseUrl);
+	if (is_array($parts)) {
+		$dbHost = $parts['host'] ?? $dbHost;
+		$dbPort = isset($parts['port']) ? (int) $parts['port'] : $dbPort;
+		$dbName = isset($parts['path']) ? ltrim($parts['path'], '/') : $dbName;
+		$dbUser = $parts['user'] ?? $dbUser;
+		$dbPass = $parts['pass'] ?? $dbPass;
+
+		if (isset($parts['query'])) {
+			parse_str($parts['query'], $queryParams);
+			if (!empty($queryParams['charset'])) {
+				$dbCharset = (string) $queryParams['charset'];
+			}
+		}
+	}
+}
+
+define('DB_HOST', $dbHost);
+define('DB_NAME', $dbName);
+define('DB_PORT', $dbPort);
+define('DB_USER', $dbUser);
+define('DB_PASS', $dbPass);
+define('DB_CHARSET', $dbCharset);
 
 // ---------------------------------------------------------------
 // Cấu hình đường dẫn ứng dụng
@@ -34,9 +66,20 @@ if (isset($_SERVER['SCRIPT_NAME'])) {
 		$detectedBasePath = '';
 	}
 }
-define('BASE_PATH', rtrim($detectedBasePath, '/'));
 
-$scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+$basePathFromEnv = (string) $env('BASE_PATH', null);
+if ($basePathFromEnv === '') {
+	$basePathFromEnv = '/';
+}
+$finalBasePath = $basePathFromEnv !== null ? $basePathFromEnv : $detectedBasePath;
+if ($finalBasePath === '/' || $finalBasePath === '.') {
+	$finalBasePath = '';
+}
+define('BASE_PATH', rtrim($finalBasePath, '/'));
+
+$forwardedProto = $_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '';
+$isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $forwardedProto === 'https';
+$scheme = $isHttps ? 'https' : 'http';
 $host   = $_SERVER['HTTP_HOST'] ?? 'localhost';
 define('BASE_URL', $scheme . '://' . $host . BASE_PATH);
 

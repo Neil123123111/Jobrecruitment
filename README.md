@@ -81,6 +81,48 @@ Internetvacongngheweb/
 
 ---
 
+## Deploy Railway
+
+### 1) Chuẩn bị GitHub
+
+- Push code mới nhất lên GitHub (đã có `Dockerfile` để Railway build tự động).
+
+### 2) Tạo Project trên Railway
+
+- Vào Railway, chọn **New Project**.
+- Chọn **Deploy from GitHub repo** và chọn repository của bạn.
+
+### 3) Thêm MySQL service
+
+- Trong cùng project, chọn **New** → **Database** → **MySQL**.
+- Railway sẽ cung cấp biến môi trường như: `MYSQLHOST`, `MYSQLPORT`, `MYSQLDATABASE`, `MYSQLUSER`, `MYSQLPASSWORD`.
+
+### 4) Tạo biến môi trường cho Web Service
+
+- Trong service web, thêm:
+- `BASE_PATH=/`
+
+Ghi chú:
+- App đã tự đọc DB từ env theo thứ tự: `DB_*` hoặc `MYSQL*`, và có hỗ trợ `DATABASE_URL`/`MYSQL_URL`.
+
+### 5) Import schema database
+
+- Mở tab MySQL service trên Railway và kết nối bằng MySQL client.
+- Import file `database.sql`.
+
+Ví dụ local command (thay bằng thông tin MySQL Railway của bạn):
+
+```bash
+mysql -h <MYSQLHOST> -P <MYSQLPORT> -u <MYSQLUSER> -p <MYSQLDATABASE> < database.sql
+```
+
+### 6) Redeploy và kiểm tra
+
+- Trigger deploy lại service web.
+- Mở domain Railway được cấp và kiểm tra đăng nhập/trang jobs.
+
+---
+
 ## 🚀 Hướng dẫn cài đặt trên XAMPP
 
 ### Bước 1: Copy source code
