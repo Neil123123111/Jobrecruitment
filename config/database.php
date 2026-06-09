@@ -19,11 +19,11 @@ $env = static function (string $key, $default = null) {
 	return ($value === false || $value === '') ? $default : $value;
 };
 
-$dbHost = (string) $env('DB_HOST', $env('MYSQLHOST', '127.0.0.1'));
-$dbPort = (int) $env('DB_PORT', $env('MYSQLPORT', 3306));
-$dbName = (string) $env('DB_NAME', $env('MYSQLDATABASE', 'jobrecruitment'));
-$dbUser = (string) $env('DB_USER', $env('MYSQLUSER', 'root'));
-$dbPass = (string) $env('DB_PASS', $env('MYSQLPASSWORD', ''));
+$dbHost = (string) $env('MYSQLHOST', '127.0.0.1');
+$dbPort = (int) $env('MYSQLPORT', 3306);
+$dbName = (string) $env('MYSQLDATABASE', 'jobrecruitment');
+$dbUser = (string) $env('MYSQLUSER', 'root');
+$dbPass = (string) $env('MYSQLPASSWORD', '');
 $dbCharset = (string) $env('DB_CHARSET', 'utf8mb4');
 
 // Hỗ trợ chuỗi kết nối dạng DATABASE_URL/MYSQL_URL
@@ -45,6 +45,13 @@ if ($databaseUrl) {
 		}
 	}
 }
+
+// Biến DB_* là override cao nhất để dễ chỉnh riêng trên Railway.
+$dbHost = (string) $env('DB_HOST', $dbHost);
+$dbPort = (int) $env('DB_PORT', $dbPort);
+$dbName = (string) $env('DB_NAME', $dbName);
+$dbUser = (string) $env('DB_USER', $dbUser);
+$dbPass = (string) $env('DB_PASS', $dbPass);
 
 define('DB_HOST', $dbHost);
 define('DB_NAME', $dbName);
