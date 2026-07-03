@@ -1,5 +1,5 @@
 # WEBSITE TUYỂN DỤNG VIỆC LÀM TRỰC TUYẾN
-## Đồ án môn học Công nghệ Web — PHP + MySQL MVC
+## PHP + MySQL MVC
 
 ---
 
